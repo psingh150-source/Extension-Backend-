@@ -1,0 +1,68 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: newtab-dashboard-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/newtab_dashboard
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres2211}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-super-secret-jwt-key-must-be-at-least-256-bits-long-for-hs256-algorithm}
+  expiration-ms: 86400000    # 24 hours
+  refresh-expiration-ms: 604800000  # 7 days
+
+# Token Encryption
+encryption:
+  secret-key: ${ENCRYPTION_KEY:0123456789abcdef0123456789abcdef}
+  salt: ${ENCRYPTION_SALT:newtabdashboardsalt}
+
+# Google OAuth Configuration
+google:
+  oauth:
+    client-id: ${GOOGLE_CLIENT_ID:your-google-client-id.apps.googleusercontent.com}
+    client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+
+# CORS
+cors:
+  allowed-origins:
+    - chrome-extension://*
+    - http://localhost:3000
+    - http://localhost:8080
+
+# Logging
+logging:
+  level:
+    com.newtab.dashboard: DEBUG
+    org.springframework.security: INFO
+    org.springframework.web.client: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
